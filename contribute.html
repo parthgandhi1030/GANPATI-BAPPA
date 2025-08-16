@@ -11,72 +11,136 @@
   <div class="max-w-4xl mx-auto px-6 py-10">
     <h1 class="text-5xl font-bold text-center mb-8 drop-shadow-lg">🙏 Contribution Form</h1>
 
-    <div class="bg-white/20 rounded-2xl shadow-lg p-6 space-y-6">
-      <p class="text-lg leading-relaxed text-white">
-        We warmly welcome your contribution towards <b>Ishwar Bhuvan Cha Raja</b> 🙌.  
-        Each devotee can offer <b>Prasad</b> by contributing a fixed amount of <span class="font-bold text-yellow-300">₹301</span>.  
-        Select the day and aarti timing you would like to contribute for.  
-        Your offering will make the celebrations more divine and blissful ✨🌺.
-      </p>
+<div class="bg-white/20 rounded-2xl shadow-lg p-6 space-y-6">
+  <p class="text-lg leading-relaxed text-white">
+    We warmly welcome your contribution towards <b>Ishwar Bhuvan Cha Raja</b> 🙌.  
+    Each devotee can offer <b>Prasad</b> by contributing a fixed amount of <span class="font-bold text-yellow-300">₹301</span>.  
+    Select the day and aarti timing you would like to contribute for.  
+    Your offering will make the celebrations more divine and blissful ✨🌺.
+  </p>
 
-      <form class="space-y-6">
-        <!-- Name -->
-        <div>
-          <label class="block text-lg mb-2">Your Name</label>
-          <input type="text" class="w-full p-3 rounded-lg text-black" placeholder="Enter your name" required>
-        </div>
-
-        <!-- Contact -->
-        <div>
-          <label class="block text-lg mb-2">Contact Number</label>
-          <input type="tel" class="w-full p-3 rounded-lg text-black" placeholder="Enter your mobile number" required>
-        </div>
-
-        <!-- Day Selection -->
-        <div>
-          <label class="block text-lg mb-2">Select Day</label>
-          <select class="w-full p-3 rounded-lg text-black" required>
-            <option value="">-- Choose a Day --</option>
-            <option>27th August</option>
-            <option>28th August</option>
-            <option>29th August</option>
-            <option>30th August</option>
-            <option>31st August (Visarjan)</option>
-          </select>
-        </div>
-
-        <!-- Time Selection -->
-        <div>
-          <label class="block text-lg mb-2">Choose Aarti Time</label>
-          <select class="w-full p-3 rounded-lg text-black" required>
-            <option value="">-- Choose Time --</option>
-            <option>27th – 30th Aug: Morning Aarti (8:00 AM)</option>
-            <option>27th – 30th Aug: Evening Aarti (8:30 PM)</option>
-            <option>31st Aug: Morning Aarti (8:15 AM)</option>
-            <option>31st Aug: Afternoon Aarti (2:30 PM)</option>
-          </select>
-        </div>
-
-        <!-- Fixed Contribution -->
-        <div class="bg-yellow-300 text-black font-bold text-xl p-4 rounded-lg shadow-md text-center">
-          💰 Contribution Amount: ₹301 (Fixed)
-        </div>
-
-        <!-- Submit -->
-        <div class="text-center">
-          <button type="submit" class="bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-3 rounded-xl font-bold shadow-lg">
-            ✅ Confirm Contribution
-          </button>
-        </div>
-      </form>
+  <form id="contributionForm" class="space-y-6">
+    <!-- Name -->
+    <div>
+      <label class="block text-lg mb-2">Your Name</label>
+      <input id="name" type="text" class="w-full p-3 rounded-lg text-black" placeholder="Enter your name" required>
     </div>
 
-    <div class="text-center mt-10">
-      <a href="index.html" class="bg-white/80 hover:bg-white text-red-700 px-6 py-3 rounded-xl font-bold shadow-lg">
-        ⬅ Back to Home
-      </a>
+    <!-- Contact -->
+    <div>
+      <label class="block text-lg mb-2">Contact Number</label>
+      <input id="contact" type="tel" class="w-full p-3 rounded-lg text-black" placeholder="Enter your mobile number" required>
     </div>
+
+    <!-- Day Selection -->
+    <div>
+      <label class="block text-lg mb-2">Select Day</label>
+      <select id="day" class="w-full p-3 rounded-lg text-black" required>
+        <option value="">-- Choose a Day --</option>
+        <option>27th August</option>
+        <option>28th August</option>
+        <option>29th August</option>
+        <option>30th August</option>
+        <option>31st August (Visarjan)</option>
+      </select>
+    </div>
+
+    <!-- Time Selection -->
+    <div>
+      <label class="block text-lg mb-2">Choose Aarti Time</label>
+      <select id="time" class="w-full p-3 rounded-lg text-black" required>
+        <option value="">-- Choose Time --</option>
+        <option>27th – 30th Aug: Morning Aarti (8:00 AM)</option>
+        <option>27th – 30th Aug: Evening Aarti (8:30 PM)</option>
+        <option>31st Aug: Morning Aarti (8:15 AM)</option>
+        <option>31st Aug: Afternoon Aarti (2:30 PM)</option>
+      </select>
+    </div>
+
+    <!-- Fixed Contribution -->
+    <div class="bg-yellow-300 text-black font-bold text-xl p-4 rounded-lg shadow-md text-center">
+      💰 Contribution Amount: ₹301 (Fixed)
+    </div>
+
+    <!-- Submit -->
+    <div class="text-center">
+      <button type="submit" class="bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-3 rounded-xl font-bold shadow-lg">
+        ✅ Confirm Contribution
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="text-center mt-10">
+  <a href="index.html" class="bg-white/80 hover:bg-white text-red-700 px-6 py-3 rounded-xl font-bold shadow-lg">
+    ⬅ Back to Home
+  </a>
+</div>
   </div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBuxI2Y_mSJjZx2b18-yFWAn-PbnQMUx6o",
+  authDomain: "ganpati25-35d7b.firebaseapp.com",
+  projectId: "ganpati25-35d7b",
+  storageBucket: "ganpati25-35d7b.firebasestorage.app",
+  messagingSenderId: "937304489757",
+  appId: "1:937304489757:web:31de3632635eb70e69abf4",
+  measurementId: "G-97GG6JB0X4"
+};
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("#contributionForm");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const nameInput = form.querySelector("#name");
+    const contact = form.querySelector("#contact").value;
+    const day = form.querySelector("#day").value;
+    const time = form.querySelector("#time").value;
+
+    let name = nameInput.value.trim();
+    if (!name) {
+      alert("Please enter your name.");
+      return;
+    }
+
+    try {
+      // Generate unique document ID based on name
+      let docId = name;
+      let counter = 1;
+      while (await getDoc(doc(db, "contributions", docId)).then(d => d.exists())) {
+        docId = `${name}-${counter}`;
+        counter++;
+      }
+
+      await setDoc(doc(db, "contributions", docId), {
+        name,
+        contact,
+        day,
+        time,
+        contribution: 301,
+        timestamp: new Date()
+      });
+
+      alert("🎉 Thank you! Your contribution has been recorded.");
+      form.reset();
+    } catch (err) {
+      console.error("Error adding document: ", err);
+      alert("❌ Something went wrong. Try again.");
+    }
+  });
+});
+</script>
+
 
 </body>
 </html>
