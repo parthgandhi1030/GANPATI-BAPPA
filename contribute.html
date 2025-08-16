@@ -78,54 +78,69 @@
 </div>
   </div>
 
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBuxI2Y_mSJjZx2b18-yFWAn-PbnQMUx6o",
-    authDomain: "ganpati25-35d7b.firebaseapp.com",
-    projectId: "ganpati25-35d7b",
-    storageBucket: "ganpati25-35d7b.firebasestorage.app",
-    messagingSenderId: "937304489757",
-    appId: "1:937304489757:web:31de3632635eb70e69abf4",
-    measurementId: "G-97GG6JB0X4"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyBuxI2Y_mSJjZx2b18-yFWAn-PbnQMUx6o",
+  authDomain: "ganpati25-35d7b.firebaseapp.com",
+  projectId: "ganpati25-35d7b",
+  storageBucket: "ganpati25-35d7b.firebasestorage.app",
+  messagingSenderId: "937304489757",
+  appId: "1:937304489757:web:31de3632635eb70e69abf4",
+  measurementId: "G-97GG6JB0X4"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
 
-  // form submit logic stays the same
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.querySelector("#contributionForm");
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("#contributionForm");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      const name = form.querySelector("#name").value;
-      const contact = form.querySelector("#contact").value;
-      const day = form.querySelector("#day").value;
-      const time = form.querySelector("#time").value;
+    const nameInput = form.querySelector("#name");
+    const contact = form.querySelector("#contact").value;
+    const day = form.querySelector("#day").value;
+    const time = form.querySelector("#time").value;
 
-      try {
-        await addDoc(collection(db, "contributions"), {
-          name,
-          contact,
-          day,
-          time,
-          contribution: 301,
-          timestamp: new Date()
-        });
-        alert("🎉 Thank you! Your contribution has been recorded.");
-        form.reset();
-      } catch (err) {
-        console.error("Error adding document: ", err);
-        alert("❌ Something went wrong. Try again.");
+    let name = nameInput.value.trim();
+    if (!name) {
+      alert("Please enter your name.");
+      return;
+    }
+
+    try {
+      // Generate unique document ID based on name
+      let docId = name;
+      let counter = 1;
+      while (await getDoc(doc(db, "contributions", docId)).then(d => d.exists())) {
+        docId = `${name}-${counter}`;
+        counter++;
       }
-    });
+
+      await setDoc(doc(db, "contributions", docId), {
+        name,
+        contact,
+        day,
+        time,
+        contribution: 301,
+        timestamp: new Date()
+      });
+
+      alert("🎉 Thank you! Your contribution has been recorded.");
+      form.reset();
+    } catch (err) {
+      console.error("Error adding document: ", err);
+      alert("❌ Something went wrong. Try again.");
+    }
   });
+});
 </script>
+
 
 </body>
 </html>

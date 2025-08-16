@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Contributions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+<div class="max-w-6xl mx-auto p-6">
+  <h1 class="text-4xl font-bold text-center mb-6">Admin Dashboard - Contributions</h1>
+
+  <div id="loginDiv" class="text-center mb-6">
+    <button id="loginBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold">
+      🔑 Sign in with Google
+    </button>
+  </div>
+
+  <div id="contentDiv" class="hidden">
+    <table class="table-auto border-collapse border border-gray-400 w-full text-black bg-white shadow-lg rounded-lg overflow-hidden">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="border px-4 py-2">Name</th>
+          <th class="border px-4 py-2">Contact</th>
+          <th class="border px-4 py-2">Day</th>
+          <th class="border px-4 py-2">Time</th>
+          <th class="border px-4 py-2">Contribution</th>
+          <th class="border px-4 py-2">Timestamp</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="mt-4 text-right">
+      <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-bold">
+        🔒 Logout
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyBuxI2Y_mSJjZx2b18-yFWAn-PbnQMUx6o",
+  authDomain: "ganpati25-35d7b.firebaseapp.com",
+  projectId: "ganpati25-35d7b",
+  storageBucket: "ganpati25-35d7b.firebasestorage.app",
+  messagingSenderId: "937304489757",
+  appId: "1:937304489757:web:31de3632635eb70e69abf4",
+  measurementId: "G-97GG6JB0X4"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+const loginDiv = document.getElementById("loginDiv");
+const contentDiv = document.getElementById("contentDiv");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const tableBody = document.getElementById("tableBody");
+
+// List of allowed admin emails
+const allowedAdmins = ["visheshjaincodes@gmail.com", "parthgandhi515@gmail.com"]; // Add more emails here
+
+// Login
+loginBtn.addEventListener("click", async () => {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (err) {
+    alert("Login failed: " + err.message);
+  }
+});
+
+// Logout
+logoutBtn.addEventListener("click", async () => {
+  await signOut(auth);
+});
+
+// Show table after login
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    if (!allowedAdmins.includes(user.email)) {
+      alert("❌ You are not authorized to view this page.");
+      await signOut(auth);
+      loginDiv.classList.remove("hidden");
+      contentDiv.classList.add("hidden");
+      return;
+    }
+
+    loginDiv.classList.add("hidden");
+    contentDiv.classList.remove("hidden");
+
+    // Fetch contributions
+    tableBody.innerHTML = ""; // clear existing rows
+    try {
+      const querySnapshot = await getDocs(collection(db, "contributions"));
+      if (querySnapshot.empty) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td class="border px-4 py-2 text-center" colspan="6">No contributions found.</td>`;
+        tableBody.appendChild(tr);
+      } else {
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const timestamp = data.timestamp?.seconds
+            ? new Date(data.timestamp.seconds * 1000).toLocaleString()
+            : data.timestamp || "-";
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td class="border px-4 py-2">${data.name || "-"}</td>
+            <td class="border px-4 py-2">${data.contact || "-"}</td>
+            <td class="border px-4 py-2">${data.day || "-"}</td>
+            <td class="border px-4 py-2">${data.time || "-"}</td>
+            <td class="border px-4 py-2">${data.contribution || "-"}</td>
+            <td class="border px-4 py-2">${timestamp}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+    } catch (err) {
+      alert("Failed to fetch contributions: " + err.message);
+    }
+  } else {
+    loginDiv.classList.remove("hidden");
+    contentDiv.classList.add("hidden");
+  }
+});
+</script>
+
+</body>
+</html>
