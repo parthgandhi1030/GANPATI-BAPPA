@@ -6,61 +6,71 @@
   <title>Devotional Songs</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #ffecd2, #fcb69f);
       margin: 0;
-      background: linear-gradient(135deg, #ffecd2, #fcb69f);
-      color: #333;
+      padding: 0;
       text-align: center;
-      padding: 20px;
     }
-
     header {
-      background: #ff5733;
+      background: #ff5722;
       color: white;
       padding: 15px;
-      text-align: center;
       font-size: 26px;
       font-weight: bold;
-      border-radius: 8px;
-      margin-bottom: 20px;
+      border-radius: 0 0 15px 15px;
     }
-
-    .songs {
-      margin: 20px auto;
-      max-width: 500px;
+    .container {
+      margin: 30px auto;
+      max-width: 550px;
       background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
     }
-
-    .song-item {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
+    .song {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
       cursor: pointer;
+      transition: 0.3s;
     }
-
-    .song-item:hover {
-      background: #ffe6e6;
+    .song:hover {
+      background: #fff3e0;
     }
-
-    .player {
+    audio {
+      margin-top: 20px;
+      width: 100%;
+    }
+    .controls {
       margin-top: 15px;
     }
-
-    .player button {
-      background: #ff5733;
+    button {
+      background: #ff5722;
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 12px 20px;
+      margin: 8px;
       border-radius: 8px;
       cursor: pointer;
-      margin: 5px;
-      font-weight: bold;
+      font-size: 16px;
+      transition: 0.3s;
     }
-
-    .player button:hover {
-      background: #c70039;
+    button:hover {
+      background: #e64a19;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 25px;
+      text-decoration: none;
+      background: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    .back-btn:hover {
+      background: #388E3C;
     }
   </style>
 </head>
@@ -68,14 +78,26 @@
 
   <header>🎶 Devotional Songs 🎶</header>
 
-  <div class="songs">
-    <div id="song-list"></div>
-    <div class="player">
-      <p id="now-playing">Select a song to play</p>
-      <audio id="audio-player" controls style="width: 100%;"></audio><br>
-      <button onclick="playSong()">▶ Play</button>
-      <button onclick="pauseSong()">⏸ Pause</button>
+  <div class="container">
+    <div class="song" onclick="playSong(0)">Jai Ganesh Deva Aarti - Anuradha Paudwal</div>
+    <div class="song" onclick="playSong(1)">Sukhkarta Dukhharta - Lata Mangeshkar</div>
+    <div class="song" onclick="playSong(2)">Shendur Lal Chadhayo - Ravindra Sathe</div>
+    <div class="song" onclick="playSong(3)">Vakratunda Mahakaya - Shankar Mahadevan</div>
+
+    <p id="nowPlaying">Select a song to play</p>
+
+    <audio id="audioPlayer" controls>
+      <source id="audioSource" src="" type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
+
+    <div class="controls">
+      <button onclick="playAudio()">▶ Play</button>
+      <button onclick="pauseAudio()">⏸ Pause</button>
     </div>
+
+    <!-- Back to Homepage Button -->
+    <a href="index.html" class="back-btn">🏠 Back to Homepage</a>
   </div>
 
   <script>
@@ -86,29 +108,25 @@
       { title: "Vakratunda Mahakaya", artist: "Shankar Mahadevan", url: "Vakratunda.mp3" }
     ];
 
-    const songList = document.getElementById("song-list");
-    const audioPlayer = document.getElementById("audio-player");
-    const nowPlaying = document.getElementById("now-playing");
+    const audioPlayer = document.getElementById("audioPlayer");
+    const audioSource = document.getElementById("audioSource");
+    const nowPlaying = document.getElementById("nowPlaying");
 
-    songs.forEach((song) => {
-      const div = document.createElement("div");
-      div.classList.add("song-item");
-      div.textContent = `${song.title} - ${song.artist}`;
-      div.onclick = () => {
-        audioPlayer.src = song.url;
-        audioPlayer.play();
-        nowPlaying.textContent = `Now Playing: ${song.title} 🎶`;
-      };
-      songList.appendChild(div);
-    });
+    function playSong(index) {
+      audioSource.src = songs[index].url;
+      audioPlayer.load();
+      audioPlayer.play();
+      nowPlaying.innerText = "Now Playing: " + songs[index].title + " - " + songs[index].artist;
+    }
 
-    function playSong() {
+    function playAudio() {
       audioPlayer.play();
     }
 
-    function pauseSong() {
+    function pauseAudio() {
       audioPlayer.pause();
     }
   </script>
+
 </body>
 </html>
